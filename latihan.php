@@ -1,23 +1,28 @@
 <?php
 class warung{
+    // Tambahkan properti $barang agar bisa diakses di dalam class
     public $harga;
     public $jumlah;
+    public $barang;
+
     public function __construct($barang) {
-        $this barang = $barang;
+        $this->barang = $barang;
     }
 
     public function tampilBarang(){
-        foreach ($this barang as $nama => $harga) {
+        foreach ($this->barang as $nama => $harga) {
             echo "Barang: $nama, Harga: $harga <br>";
-
         }
     }
 }
+
 $barang = [
     "kopi" => 5000,
     "Roti" => 3000
 ];
 
-$makanan = new Warung ($barang)
+
+$makanan = new Warung($barang);
+$makanan->tampilBarang();
 
 ?>
