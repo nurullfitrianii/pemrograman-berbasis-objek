@@ -1,160 +1,83 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Studi Kasus</title>
-    <style>
-        body {
-            font-family: 'Times New Roman', serif;
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 30%;
-            margin: 20px 10px;
-        }
-        th {
-            background-color: #8B5F8C;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            border: 1px solid black;
-        }
-        td {
-            padding: 8px;
-            text-align: center;
-            border: 1px solid black;
-        }
-    </style>
-</head>
-<body>
-
-<h1>Bilangan Deret Nilai Volume Bangun Ruang</h1>
-
 <?php
-// Class untuk menghitung volume bangun ruang
-class BangunRuang {
-    private $jenis;
-    private $sisi;
-    private $jariJari;
-    private $tinggi;
-    
-    // Constructor
-    public function __construct($jenis, $sisi = 0, $jariJari = 0, $tinggi = 0) {
-        $this->jenis = $jenis;
-        $this->sisi = $sisi;
-        $this->jariJari = $jariJari;
-        $this->tinggi = $tinggi;
+
+class Employee {
+    protected $nama;
+    protected $gaji;
+    protected $lamaKerja;
+
+    public function __construct($nama, $gaji, $lamaKerja) {
+        $this->nama = $nama;
+        $this->gaji = $gaji;
+        $this->lamaKerja = $lamaKerja;
     }
-    
-    // Getter dan Setter
-    public function getJenis() {
-        return $this->jenis;
+
+    public function getNama() {
+        return $this->nama;
     }
-    
-    public function setJenis($jenis) {
-        $this->jenis = $jenis;
+
+    public function getGaji() {
+        return $this->gaji;
     }
-    
-    public function getSisi() {
-        return $this->sisi;
+
+    public function getLamaKerja() {
+        return $this->lamaKerja;
     }
-    
-    public function setSisi($sisi) {
-        $this->sisi = $sisi;
+
+    public function hitungGaji() {
+        return $this->gaji;
     }
-    
-    public function getJariJari() {
-        return $this->jariJari;
-    }
-    
-    public function setJariJari($jariJari) {
-        $this->jariJari = $jariJari;
-    }
-    
-    public function getTinggi() {
-        return $this->tinggi;
-    }
-    
-    public function setTinggi($tinggi) {
-        $this->tinggi = $tinggi;
-    }
-    
-    // Function untuk menghitung volume
-    public function hitungVolume() {
-        switch($this->jenis) {
-            case 'Bola':
-                // Menggunakan nilai pi yang sesuai untuk hasil yang diharapkan
-                return (4/3) * (3.14) * pow($this->jariJari, 3);
-            case 'Kerucut':
-                // Menggunakan nilai pi yang sesuai untuk hasil yang diharapkan
-                return (1/3) * (3.14) * pow($this->jariJari, 2) * $this->tinggi;
-            case 'Limas Segi Empat':
-                return (1/3) * pow($this->sisi, 2) * $this->tinggi;
-            case 'Kubus':
-                return pow($this->sisi, 3);
-            case 'Tabung':
-                // Menggunakan nilai pi yang sesuai untuk hasil yang diharapkan
-                return (3.14) * pow($this->jariJari, 2) * $this->tinggi;
-            default:
-                return 0;
+}
+ 
+class Programmer extends Employee {
+    public function hitungGaji() {
+        $bonus = 0;
+        if ($this->lamaKerja >= 1 && $this->lamaKerja <= 10) {
+            $bonus = 0.01 * $this->lamaKerja * $this->gaji;
+        } elseif ($this->lamaKerja > 10) {
+            $bonus = 0.02 * $this->lamaKerja * $this->gaji;
         }
+        return $this->gaji + $bonus;
     }
 }
 
-// Array data bangun ruang
-$bangunRuangData = [
-    ['jenis' => 'Bola', 'sisi' => 0, 'jariJari' => 7, 'tinggi' => 0],
-    ['jenis' => 'Kerucut', 'sisi' => 0, 'jariJari' => 14, 'tinggi' => 10],
-    ['jenis' => 'Limas Segi Empat', 'sisi' => 8, 'jariJari' => 0, 'tinggi' => 24],
-    ['jenis' => 'Kubus', 'sisi' => 30, 'jariJari' => 0, 'tinggi' => 0],
-    ['jenis' => 'Tabung', 'sisi' => 0, 'jariJari' => 7, 'tinggi' => 10]
-];
-
-// Header tabel
-echo "<table>\n";
-echo "<tr>\n";
-echo "<th>Jenis Bangun Ruang</th>\n";
-echo "<th>Sisi</th>\n";
-echo "<th>Jari-jari</th>\n";
-echo "<th>Tinggi</th>\n";
-echo "<th>Volume</th>\n";
-echo "</tr>\n";
-
-// Perulangan untuk menampilkan data dan menghitung volume
-foreach($bangunRuangData as $data) {
-    $bangunRuang = new BangunRuang(
-        $data['jenis'],
-        $data['sisi'],
-        $data['jariJari'],
-        $data['tinggi']
-    );
-    
-    $volume = $bangunRuang->hitungVolume();
-    
-    // Percabangan untuk format volume sesuai output yang diharapkan
-    if($data['jenis'] == 'Bola') {
-        $volumeFormat = number_format($volume, 10, '.', '');
-    } elseif($data['jenis'] == 'Kerucut') {
-        $volumeFormat = number_format($volume, 10, '.', '');
-    } elseif($data['jenis'] == 'Limas Segi Empat') {
-        $volumeFormat = number_format($volume, 0, '.', '');
-    } elseif($data['jenis'] == 'Kubus') {
-        $volumeFormat = number_format($volume, 0, '.', '');
-    } elseif($data['jenis'] == 'Tabung') {
-        $volumeFormat = number_format($volume, 1, '.', '');
+class Direktur extends Employee {
+    public function hitungGaji() {
+        $bonus = 0.5 * $this->lamaKerja * $this->gaji;
+        $tunjangan = 0.1 * $this->lamaKerja * $this->gaji;
+        return $this->gaji + $bonus + $tunjangan;
     }
-    
-    echo "<tr>\n";
-    echo "<td>" . $bangunRuang->getJenis() . "</td>\n";
-    echo "<td>" . $bangunRuang->getSisi() . "</td>\n";
-    echo "<td>" . $bangunRuang->getJariJari() . "</td>\n";
-    echo "<td>" . $bangunRuang->getTinggi() . "</td>\n";
-    echo "<td>" . $volumeFormat . "</td>\n";
-    echo "</tr>\n";
 }
 
-echo "</table>\n";
+class PegawaiMingguan extends Employee {
+    private $hargaBarang;
+    private $stokBarang;
+    private $penjualan;
+
+    public function __construct($nama, $gaji, $lamaKerja, $hargaBarang, $stokBarang, $penjualan) {
+        parent::__construct($nama, $gaji, $lamaKerja);
+        $this->hargaBarang = $hargaBarang;
+        $this->stokBarang = $stokBarang;
+        $this->penjualan = $penjualan;
+    }
+
+    public function hitungGaji() {
+        $persentase = ($this->penjualan / $this->stokBarang) * 100;
+        if ($persentase > 70) {
+            $bonus = 0.10 * $this->hargaBarang * $this->penjualan;
+        } else {
+            $bonus = 0.03 * $this->hargaBarang * $this->penjualan;
+        }
+        return $this->gaji + $bonus;
+    }
+}
+
+
+$prog = new Programmer("Budi", 5000000, 5);
+echo "Programmer " . $prog->getNama() . " gaji: Rp " . number_format($prog->hitungGaji(), 0, ',', '.') . "<br>";
+
+$dir = new Direktur("Andi", 10000000, 3);
+echo "Direktur " . $dir->getNama() . " gaji: Rp " . number_format($dir->hitungGaji(), 0, ',', '.') . "<br>";
+
+$pgw = new PegawaiMingguan("Sari", 2000000, 2, 50000, 100, 80);
+echo "Pegawai Mingguan " . $pgw->getNama() . " gaji: Rp " . number_format($pgw->hitungGaji(), 0, ',', '.') . "<br>";
 ?>
-
-</body>
-</html>
