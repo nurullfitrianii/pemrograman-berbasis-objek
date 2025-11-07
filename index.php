@@ -1,117 +1,72 @@
+<?php
+// index.php
+session_start(); 
+
+// Pengecekan status login (WAJIB)
+if(!isset($_SESSION['status']) || $_SESSION['status'] != "login"){
+    header('location:login.php?pesan=belum_login');
+    exit;
+}
+
+include('koneksi.php');
+$db = new database();
+$data_barang = $db->tampil_data();
+// Baris ini tidak diperlukan karena sudah ada di kelas Database:
+// $koneksi=mysqli_connect("localhost","root","","belajar_oop"); 
+?>
 <!DOCTYPE html>
 <html>
 <head>
-<title>Membuat CRUD Dengan PHP Dan MySQL - Menampilkan data dari database</title>
-<link rel="stylesheet" type="text/css" href="style.css">
+    <title>Data Barang</title>
 </head>
 <body>
-<div class="judul">
-<h1>Membuat CRUD Dengan PHP Dan MySQL</h1>
-<h2>Menampilkan data dari database</h2>
+
+<a href="tambah_data.php">
+    <button>Tambah Data</button>
+</a>
+
+<div style="margin-left: 365px; margin-top: 5px; margin-bottom: 5px;">
+    <form action="cari_data.php" method="get">
+        <input type="text" name="cari" placeholder="Cari Nama Barang">
+        <input type="submit" value="Cari">
+    </form>
 </div>
 
-<?php 
-// Tentukan halaman yang akan ditampilkan, defaultnya 'data_user' 
-$currentPage = isset($_GET['page']) ? $_GET['page'] : 'data_user';
-?>
-
-<div class="nav-menu">
-    <div class="nav-container">
-        <ul>
-            <li><a href="index.php">Home</a></li>
-            
-            <li class="dropdown">
-                <a href="#">Data Master</a>
-                <ul>
-                    <li><a href="index.php?page=data_user">Data User</a></li>
-                    <li><a href="index.php?page=data_barang">Data Barang</a></li>
-                    <li><a href="index.php?page=data_customer">Data Customer</a></li>
-                    <li><a href="index.php?page=data_supplier">Data Supplier</a></li>
-                </ul>
-            </li>
-            
-            <li class="dropdown">
-                <a href="#">Data Transaksi</a>
-                <ul>
-                    <li><a href="index.php?page=transaksi_pembelian">Transaksi Pembelian</a></li>
-                    <li><a href="index.php?page=transaksi_penjualan">Transaksi Penjualan</a></li>
-                </ul>
-            </li>
-
-            <li class="dropdown">
-                <a href="#">Laporan</a>
-                <ul>
-                    <li><a href="index.php?page=laporan_barang">Laporan Data Barang</a></li>
-                    <li><a href="index.php?page=laporan_customer">Laporan Data Customer</a></li>
-                    <li><a href="index.php?page=laporan_supplier">Laporan Data Supplier</a></li>
-                    <li><a href="index.php?page=laporan_pembelian">Laporan Transaksi Pembelian</a></li>
-                    <li><a href="index.php?page=laporan_penjualan">Laporan Transaksi Penjualan</a></li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-</div>
-<div class="container">
-
-<?php 
-// Menampilkan notifikasi CRUD
-if(isset($_GET['pesan'])){
-    $pesan = $_GET['pesan'];
-    if($pesan == "input"){
-        echo "<p class='notif'>Data berhasil di input.</p>";
-    }else if($pesan == "update"){
-        echo "<p class='notif'>Data berhasil di update.</p>";
-    }else if($pesan == "hapus"){
-        echo "<p class='notif'>Data berhasil di hapus.</p>";
-    }
-}
-
-
-// LOGIKA TAMPILAN KONTEN BERDASARKAN MENU YANG DIKLIK
-if ($currentPage == 'data_user') {
-    // KONTEN DATA USER 
-?>
-
-<br/>
-<a class="tombol" href="input.php">+ Tambah Data Baru</a>
-
-<h3>Data user</h3>
-<table border="1" class="table">
+<table border="1"> 
     <tr>
         <th>No</th>
-        <th>Nama</th>
-        <th>Alamat</th>
-        <th>Pekerjaan</th>
-        <th>Opsi</th>
+        <th>Kode Barang</th>
+        <th>Barang</th>
+        <th>Stok</th>
+        <th>Harga Beli</th>
+        <th>Harga Jual</th>
+        <th>Action</th>
     </tr>
-    <?php 
-    include 'koneksi.php';
+    <?php
     $no = 1;
-    $query_mysql = mysqli_query($koneksi,"SELECT * FROM user");
-    while($data = mysqli_fetch_array($query_mysql)){
+    foreach($data_barang as $row){
     ?>
     <tr>
         <td><?php echo $no++; ?></td>
-        <td><?php echo $data['nama']; ?></td>
-        <td><?php echo $data['alamat']; ?></td>
-        <td><?php echo $data['pekerjaan']; ?></td>
+        <td><?php echo "BRG" . str_pad($row['id_barang'], 3, '0', STR_PAD_LEFT); ?></td>
+        <td><?php echo $row['nama_barang']; ?></td>
+        <td><?php echo $row['stok']; ?></td>
+        <td><?php echo $row['harga_beli']; ?></td>
+        <td><?php echo $row['harga_jual']; ?></td>
         <td>
-            <a class="edit" href="edit.php?id=<?php echo $data['id']; ?>">Edit</a> | 
-            <a class="hapus" href="hapus.php?id=<?php echo $data['id']; ?>">Hapus</a>      
+            <a href="edit_data.php?id_barang=<?php echo $row['id_barang']; ?>&action=edit">Edit</a>
+            <a href="proses_barang.php?id_barang=<?php echo $row['id_barang']; ?>&action=delete">Hapus</a>
         </td>
     </tr>
-    <?php } ?>
+    <?php
+    }
+    ?>
 </table>
 
-<?php
-} else {
-    // TAMPILAN PLACEHOLDER UNTUK MENU LAIN
-    $pageTitle = ucwords(str_replace('_', ' ', $currentPage));
-    echo "<h3>Halaman " . $pageTitle . "</h3>";
-    echo "<p>Konten untuk menu <b>$pageTitle</b> akan muncul di sini.</p>";
-}
-?>
+<br>
+<a href="logout.php">
+    <button>Keluar Aplikasi</button>
+</a>
 
-</div>
 </body>
 </html>
